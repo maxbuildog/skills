@@ -18,7 +18,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS_DIR = join(ROOT, 'skills')
 const QUIET = process.argv.includes('--quiet')
 
-const DESCRIPTION_MAX = 500
+const DESCRIPTION_MAX = 1024
 const BODY_MAX_LINES = 500
 const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
 
@@ -44,9 +44,11 @@ function parseFrontmatter (raw) {
     const match = /^([A-Za-z0-9_-]+):\s*(.*)$/.exec(line)
     if (match) {
       currentKey = match[1]
-      data[currentKey] = match[2].trim()
+      // Block scalars (`key: |` and `key: >`) carry their value on the
+      // following indented lines, which is how a description long enough to
+      // list trigger phrases stays readable.
+      data[currentKey] = /^[|>][-+]?$/.test(match[2].trim()) ? '' : match[2].trim()
     } else if (currentKey && /^\s+\S/.test(line)) {
-      // folded continuation of the previous value
       data[currentKey] = `${data[currentKey]} ${line.trim()}`.trim()
     }
   }
@@ -101,8 +103,14 @@ function validateSkill (name) {
     if (data.description.length > DESCRIPTION_MAX) {
       err(name, `description is ${data.description.length} chars, max is ${DESCRIPTION_MAX}`)
     }
-    if (!/use when/i.test(data.description)) {
-      warn(name, 'description has no "Use when ..." clause, which is what the agent matches on')
+    // Anthropic's own skill-creator guidance says descriptions should lean
+    // "pushy", because agents under-trigger skills. Quoted trigger phrases in
+    // the user's own words are what both the agent and the registries match on.
+    if (!/use when/i.test(data.description) && !/triggers?\s*:/i.test(data.description)) {
+      warn(name, 'description has neither a "Use when ..." clause nor a "Triggers:" list, which is what the agent matches on')
+    }
+    if (!/"[^"]{4,}"/.test(data.description)) {
+      warn(name, 'description quotes no trigger phrase in the user\'s own words')
     }
     if (/storecanary\.io/i.test(data.description)) {
       err(name, 'description must not contain a product link (see docs/skill-authoring.md, the link rule)')
@@ -131,8 +139,19 @@ function validateSkill (name) {
     }
   }
 
-  // --- the no-callback rule ------------------------------------------------
+  // --- a skill that needs something must say so -----------------------------
   const scriptsDir = join(dir, 'scripts')
+  if (existsSync(scriptsDir) && !data.compatibility) {
+    warn(name, 'ships scripts but declares no `compatibility`: say which runtime, binaries or keys are needed')
+  }
+  if (existsSync(scriptsDir) && !data['allowed-tools']) {
+    warn(name, 'ships scripts but declares no `allowed-tools`: scope them rather than leaving Bash open')
+  }
+  if (data['allowed-tools'] && /(^|\s)Bash(\s|$)/.test(data['allowed-tools'])) {
+    warn(name, 'grants unscoped `Bash`: prefer Bash(<command> *) so the skill cannot run anything it likes')
+  }
+
+  // --- the no-callback rule ------------------------------------------------
   if (existsSync(scriptsDir)) {
     for (const file of readdirSync(scriptsDir)) {
       if (!/\.(mjs|js|ts|sh|py)$/.test(file)) continue

@@ -14,6 +14,12 @@ Works with Claude Code, Cursor, Windsurf, Cline, Codex and other agents that sup
 npx skills add maxbuildog/skills/<skill-name>
 ```
 
+In Claude Code you can also install through the plugin marketplace:
+
+```
+/plugin marketplace add maxbuildog/skills
+```
+
 Or clone the repo and copy the folder you want into `~/.claude/skills/` (personal) or `.claude/skills/` (project).
 
 ## The skills

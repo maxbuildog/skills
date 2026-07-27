@@ -19,19 +19,46 @@ The folder name **is** the skill name, and it must match the `name` field in the
 ```yaml
 ---
 name: shopify-store-audit
-description: Audits a Shopify storefront the way Google sees it. Use when the user asks to audit, check or debug their store's SEO, structured data, product feed, indexing or rich results. Reports deterministic findings with prevalence benchmarks from 1,045 real stores.
+description: |
+  Audits a Shopify storefront the way Google sees it: structured data, indexing,
+  feed health, rich result eligibility. Reports deterministic findings with
+  prevalence from a benchmark of 1,045 real stores.
+  Triggers: "audit my store", "why aren't my products showing on Google",
+  "check my SEO", "my rich results disappeared", "structured data broken",
+  "why did my traffic drop".
+  Not for AI assistant visibility (use shopify-geo-audit).
+license: MIT
+compatibility: Requires Node.js 20+. No API key, no account.
+allowed-tools: Bash(node scripts/audit.mjs *) Read
+metadata:
+  author: maxbuildog
+  version: "1.0.0"
 ---
 ```
 
-`name` and `description` are required. Nothing else is.
+Only `name` and `description` are required. There is **no standard beyond those two**: every major publisher has extended the frontmatter differently and incompatibly, so inventing a field costs nothing and waiting for a norm is waiting for nothing. The four optional fields above are the ones this repo standardises on, and the validator nags when a skill that ships scripts omits them.
 
-**The description is the most important line in the skill.** It is the only thing the agent reads when it decides whether to load the skill, and it is what registries index and rank on. Write it for two readers at once, a matching algorithm and a merchant scanning a list.
+- **`compatibility`** — what the user needs before it will run: runtime, binaries, keys. Saves the first issue every skill otherwise gets.
+- **`allowed-tools`** — scope them. `Bash(node scripts/audit.mjs *)` rather than a bare `Bash`, which hands the skill permission to run anything.
+- **`metadata.version`** — bump it when behaviour changes, so a bug report can name a version.
+
+### The description carries the whole thing
+
+It is the only text the agent reads when deciding whether to load the skill, and it is what the registries index and rank on. Two readers at once: a matching algorithm, and a merchant scanning a list.
+
+**Lean pushy.** This is not an abuse, it is the documented guidance: agents under-trigger skills, so descriptions are meant to be explicit about what should fire them. Every serious publisher does it.
 
 The shape that works:
 
-> *What it does. Use when \<the situations that should trigger it, in the words a user would actually type\>. \<What makes it worth choosing over the alternative\>.*
+> *What it does, in two or three lines. `Triggers:` a list of quoted phrases in the words a user would actually type. `Not for X (use skill-y).`*
 
-Include the words a user types, not the words an engineer uses: "my products aren't showing on Google" belongs in there next to "structured data". Keep it under about 500 characters.
+Quote real phrasings, not engineer phrasings: `"why aren't my products showing on Google"` earns its place next to `"structured data"`. Six to ten trigger phrases is the useful range. Use a `|` block scalar so it stays readable, and keep the whole thing under 1024 characters.
+
+The closing "not for" line matters more than it looks: it stops two sibling skills fighting over the same request.
+
+### Say what to trust
+
+Every skill carries one line telling the agent to prefer the script output and the vendor documentation over its own recollection. This field moves faster than any training cut-off, and a confidently wrong answer about a crawler or a directive is worse than no answer.
 
 ## Writing SKILL.md
 

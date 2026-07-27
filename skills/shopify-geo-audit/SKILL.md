@@ -1,6 +1,21 @@
 ---
 name: shopify-geo-audit
-description: Measures whether an online store can be found and recommended by AI assistants. Use when the user asks why ChatGPT or Perplexity never mentions their products, wants a GEO or AEO audit, asks about AI Overviews, llms.txt, or whether AI crawlers can read their store. Runs deterministic checks on crawler access and structured data, then probes real buyer questions, and compares every finding to 1,045 audited stores.
+description: |
+  Measures whether an online store can be found and recommended by AI assistants,
+  and reports why not. Runs deterministic checks on AI crawler access and product
+  structured data, then probes real buyer questions through search, and compares
+  every finding to a benchmark of 1,045 audited storefronts.
+  Triggers: "why doesn't ChatGPT recommend my products", "GEO audit", "AEO audit",
+  "AI visibility", "am I in AI Overviews", "is my store visible to AI",
+  "should I add llms.txt", "am I blocking GPTBot", "my competitor gets cited and I don't",
+  "AI search optimisation", "does Perplexity know my store".
+  Not for classic Google ranking or rich results (use shopify-store-audit).
+license: MIT
+compatibility: Requires Node.js 20+ and a web search tool available to the agent. No API key, no account, no network call to any server other than the store being audited.
+allowed-tools: Bash(node scripts/ai-readiness.mjs *) WebSearch WebFetch Read
+metadata:
+  author: maxbuildog
+  version: "1.0.0"
 ---
 
 # Shopify GEO audit
@@ -93,6 +108,8 @@ Only quote a prevalence for a code that is actually in the benchmark file. If it
 **5. The three things to do first.** Ordered by what actually changes retrieval, not by severity label. Blocked crawler, then noindex, then missing schema, then content. Nothing else.
 
 ## Rules
+
+**Trust the script and the vendor documentation over what you remember.** This field moves fast. Which crawler serves which assistant, whether a directive is honoured, what a registry requires: all of it has changed inside a year and your training data is older than that. Take crawler behaviour from the script output, take fixes from `references/fixes.md`, take prevalence from `assets/benchmark.json`. Where none of them answers, say the answer is unknown rather than filling the gap from memory.
 
 **Never state a number you did not measure.** No estimated traffic, no "you are losing X% of AI visibility", no invented share of voice. If it was not counted, it does not appear.
 

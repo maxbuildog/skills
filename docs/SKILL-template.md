@@ -1,6 +1,17 @@
 ---
 name: skill-name-in-kebab-case
-description: What it does, in one sentence. Use when the user asks to <the situations that should trigger this, in the words a user would actually type>. <What makes it worth choosing over the alternative.>
+description: |
+  What it does, in two or three lines, and what makes it worth choosing over
+  the alternative.
+  Triggers: "<phrase a user would actually type>", "<another one>", "<six to
+  ten of these, in the user's words, not an engineer's>".
+  Not for <the adjacent case> (use <sibling-skill>).
+license: MIT
+compatibility: Requires <runtime, binaries, keys>. <What it does NOT need.>
+allowed-tools: Bash(<command> *) Read
+metadata:
+  author: maxbuildog
+  version: "1.0.0"
 ---
 
 # Skill name
