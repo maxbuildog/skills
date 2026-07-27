@@ -11,7 +11,7 @@ Everything runs on your machine. Nothing is uploaded.
 Works with Claude Code, Cursor, Windsurf, Cline, Codex and other agents that support `SKILL.md`.
 
 ```bash
-npx skills add Xoumaaa23/skills/<skill-name>
+npx skills add maxbuildog/skills/<skill-name>
 ```
 
 Or clone the repo and copy the folder you want into `~/.claude/skills/` (personal) or `.claude/skills/` (project).
@@ -20,7 +20,7 @@ Or clone the repo and copy the folder you want into `~/.claude/skills/` (persona
 
 | Skill | What it answers | Status |
 |---|---|---|
-| `shopify-geo-audit` | Do ChatGPT, Perplexity and AI Overviews recommend my products, or my competitor's? | In progress |
+| [`shopify-geo-audit`](skills/shopify-geo-audit) | Do ChatGPT, Perplexity and AI Overviews recommend my products, or my competitor's? | Available |
 | `shopify-store-audit` | What does Google actually see on my store, and what is broken? | Planned |
 | `shopify-feed-doctor` | Why is Merchant Center disapproving my products? | Planned |
 | `shopify-price-check` | Where do my prices sit against a competitor's, product by product? | Planned |

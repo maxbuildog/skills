@@ -66,9 +66,17 @@ Use `?ref=skill-<skill-name>` on the URL so the channel is measurable.
 
 ## The no-callback rule
 
-A skill in this repo makes HTTP requests to the store it is auditing, and to nothing else.
+**A skill never calls a server we control.** No telemetry, not even anonymous. No "help us improve" ping. No fetching the benchmark at runtime, it ships in the repo. Someone will read the source, and the day they find a callback, the repo is finished. The trust is the distribution.
 
-No telemetry, not even anonymous. No "help us improve" ping. No fetching the benchmark from a server at runtime, it ships in the repo. Someone will read the source, and the day they find a callback, the repo is finished. The trust is the distribution.
+Beyond that, a skill reaches the store it is auditing, and nothing else, with one exception: a skill that measures how a store appears in AI search has to actually search. It may use the agent's own web search tool, and when it does, it says so in the first section of `SKILL.md`, before the procedure. The user's own agent and its own quota, never ours.
+
+## Using the benchmark
+
+`npx skills add owner/repo/skill-name` copies the skill folder and nothing else. A skill that reads `data/benchmark.json` from the repo root works in a clone and breaks for everyone who installs it on its own.
+
+So a skill that needs the benchmark keeps its own copy at `assets/benchmark.json` and reads that. Do not edit it by hand: `scripts/build-benchmark.mjs` writes it into every skill whose `SKILL.md` mentions `assets/benchmark.json`, and CI fails if a copy has drifted from the root file.
+
+Quote a prevalence only for a code that is actually in the file. Never estimate one.
 
 ## Checks
 

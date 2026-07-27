@@ -19,7 +19,7 @@
  * tells us nothing about the prevalence of a defect.
  */
 
-import { readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -171,11 +171,33 @@ const benchmark = {
   findings
 }
 
+const serialised = JSON.stringify(benchmark, null, 2) + '\n'
+
 mkdirSync(join(ROOT, 'data'), { recursive: true })
-writeFileSync(join(ROOT, 'data', 'benchmark.json'), JSON.stringify(benchmark, null, 2) + '\n')
+writeFileSync(join(ROOT, 'data', 'benchmark.json'), serialised)
+
+/**
+ * `npx skills add owner/repo/skill-name` copies the skill folder and nothing
+ * else, so a skill that reads the benchmark from the repo root would break the
+ * moment someone installs it on its own. Skills that use it keep their own copy
+ * under assets/, and it is synced here so the two can never drift.
+ */
+const synced = []
+const skillsDir = join(ROOT, 'skills')
+if (existsSync(skillsDir)) {
+  for (const skill of readdirSync(skillsDir)) {
+    const skillFile = join(skillsDir, skill, 'SKILL.md')
+    if (!existsSync(skillFile)) continue
+    if (!readFileSync(skillFile, 'utf8').includes('assets/benchmark.json')) continue
+    mkdirSync(join(skillsDir, skill, 'assets'), { recursive: true })
+    writeFileSync(join(skillsDir, skill, 'assets', 'benchmark.json'), serialised)
+    synced.push(skill)
+  }
+}
 
 console.log(`benchmark written: ${totalStores} stores, ${totalPdps} product pages, ${findings.length} distinct codes`)
 console.log(`  ${storesWithCritical} stores (${benchmark.sample.share_with_critical}%) have at least one CRITICAL`)
+console.log('  benchmark copied into skill assets: ' + (synced.join(', ') || 'none'))
 console.log(`  source files: ${files.length}, incomplete scans skipped: ${skippedNotOk}`)
 console.log('  top 10:')
 for (const f of findings.slice(0, 10)) {

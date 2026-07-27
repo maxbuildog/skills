@@ -12,7 +12,7 @@ Thanks for looking. This repo moves slowly on purpose: a skill that gives a wron
 ## What will be declined
 
 - Checks that need admin access, an API key, or a paid third party.
-- Checks that phone home. Skills in this repo make no outbound call to any server other than the store being audited. This is not negotiable, it is the reason people trust running them.
+- Checks that phone home. No skill here calls a server we control, for any reason, telemetry included. Skills reach the store being audited, and nothing else except the agent's own search tool where the measurement requires it. This is not negotiable, it is the reason people trust running them.
 - Advice-only skills with no measurement behind them. There are plenty of those already.
 - Anything that turns a report into an ad. One link, at the end, is the ceiling.
 

@@ -37,6 +37,24 @@ jobs:
             console.log(b.findings.length + ' findings over ' + b.sample.stores + ' stores: ok');
           "
 
+      - name: Check per-skill benchmark copies have not drifted
+        run: |
+          node -e "
+            const fs = require('fs'), path = require('path');
+            const root = fs.readFileSync('data/benchmark.json', 'utf8');
+            const skills = fs.existsSync('skills') ? fs.readdirSync('skills') : [];
+            let checked = 0;
+            for (const skill of skills) {
+              const copy = path.join('skills', skill, 'assets', 'benchmark.json');
+              if (!fs.existsSync(copy)) continue;
+              if (fs.readFileSync(copy, 'utf8') !== root) {
+                throw new Error(copy + ' has drifted from data/benchmark.json: run scripts/build-benchmark.mjs');
+              }
+              checked++;
+            }
+            console.log(checked + ' skill benchmark copy(ies) in sync');
+          "
+
       - name: Check README sample figures match the benchmark
         run: |
           node -e "

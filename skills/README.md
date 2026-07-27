@@ -13,7 +13,7 @@ skills/<skill-name>/
 Install one on its own:
 
 ```bash
-npx skills add Xoumaaa23/skills/<skill-name>
+npx skills add maxbuildog/skills/<skill-name>
 ```
 
 Writing one: [../docs/skill-authoring.md](../docs/skill-authoring.md). Start from [../docs/SKILL-template.md](../docs/SKILL-template.md).

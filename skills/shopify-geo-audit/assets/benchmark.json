@@ -1,0 +1,471 @@
+{
+  "$schema": "./benchmark.schema.json",
+  "version": 1,
+  "generated_from": "StoreCanary external scans of live Shopify storefronts",
+  "method": "Each store is scanned from the outside, the way Googlebot sees it: storefront HTML, JSON-LD, products.json, robots/meta directives, hreflang and certificate. No app, no admin access, no cooperation from the store required. A store is counted once, on its most recent completed scan.",
+  "sample": {
+    "stores": 1045,
+    "product_pages": 9529,
+    "stores_with_at_least_one_critical": 236,
+    "stores_with_at_least_one_finding": 1042,
+    "share_with_critical": 22.6,
+    "incomplete_scans_excluded": 663
+  },
+  "caveats": [
+    "The sample is a convenience sample of independent DTC Shopify stores, weighted towards the US. It is not a random sample of all Shopify stores.",
+    "Prevalence is measured per store, not per product page: a store counts once for a given code no matter how many of its pages are affected.",
+    "A store is counted on its most recent completed scan only."
+  ],
+  "findings": [
+    {
+      "code": "no_shipping_return_info",
+      "severity": "INFO",
+      "stores": 790,
+      "prevalence": 75.6
+    },
+    {
+      "code": "meta_desc_too_long",
+      "severity": "INFO",
+      "stores": 769,
+      "prevalence": 73.6
+    },
+    {
+      "code": "no_rating",
+      "severity": "OPPORTUNITY",
+      "stores": 718,
+      "prevalence": 68.7
+    },
+    {
+      "code": "no_price_valid_until",
+      "severity": "INFO",
+      "stores": 637,
+      "prevalence": 61
+    },
+    {
+      "code": "no_breadcrumbs",
+      "severity": "OPPORTUNITY",
+      "stores": 471,
+      "prevalence": 45.1
+    },
+    {
+      "code": "title_too_long",
+      "severity": "INFO",
+      "stores": 444,
+      "prevalence": 42.5
+    },
+    {
+      "code": "no_product_schema",
+      "severity": "CRITICAL",
+      "stores": 156,
+      "prevalence": 14.9
+    },
+    {
+      "code": "meta_desc_missing",
+      "severity": "INFO",
+      "stores": 138,
+      "prevalence": 13.2
+    },
+    {
+      "code": "noindex_pdp",
+      "severity": "CRITICAL",
+      "stores": 102,
+      "prevalence": 9.8
+    },
+    {
+      "code": "image_too_small",
+      "severity": "WARNING",
+      "stores": 100,
+      "prevalence": 9.6
+    },
+    {
+      "code": "h1_missing",
+      "severity": "INFO",
+      "stores": 93,
+      "prevalence": 8.9
+    },
+    {
+      "code": "robots_facets_exposed",
+      "severity": "WARNING",
+      "stores": 61,
+      "prevalence": 5.8
+    },
+    {
+      "code": "gtin_invalid",
+      "severity": "WARNING",
+      "stores": 47,
+      "prevalence": 4.5
+    },
+    {
+      "code": "no_og_image",
+      "severity": "INFO",
+      "stores": 45,
+      "prevalence": 4.3
+    },
+    {
+      "code": "meta_desc_duplicate",
+      "severity": "INFO",
+      "stores": 43,
+      "prevalence": 4.1
+    },
+    {
+      "code": "invalid_jsonld",
+      "severity": "CRITICAL",
+      "stores": 38,
+      "prevalence": 3.6
+    },
+    {
+      "code": "pagination_canonical_page1",
+      "severity": "WARNING",
+      "stores": 34,
+      "prevalence": 3.3
+    },
+    {
+      "code": "aggregate_offer_only",
+      "severity": "INFO",
+      "stores": 33,
+      "prevalence": 3.2
+    },
+    {
+      "code": "title_duplicate",
+      "severity": "WARNING",
+      "stores": 27,
+      "prevalence": 2.6
+    },
+    {
+      "code": "price_mismatch",
+      "severity": "CRITICAL",
+      "stores": 23,
+      "prevalence": 2.2
+    },
+    {
+      "code": "sitemap_lists_noindex",
+      "severity": "WARNING",
+      "stores": 22,
+      "prevalence": 2.1
+    },
+    {
+      "code": "no_image",
+      "severity": "WARNING",
+      "stores": 22,
+      "prevalence": 2.1
+    },
+    {
+      "code": "no_availability",
+      "severity": "WARNING",
+      "stores": 22,
+      "prevalence": 2.1
+    },
+    {
+      "code": "pdp_redirects_offsite",
+      "severity": "WARNING",
+      "stores": 22,
+      "prevalence": 2.1
+    },
+    {
+      "code": "price_vs_platform_mismatch",
+      "severity": "WARNING",
+      "stores": 16,
+      "prevalence": 1.5
+    },
+    {
+      "code": "pdp_http_404",
+      "severity": "CRITICAL",
+      "stores": 16,
+      "prevalence": 1.5
+    },
+    {
+      "code": "hreflang_no_return",
+      "severity": "WARNING",
+      "stores": 15,
+      "prevalence": 1.4
+    },
+    {
+      "code": "aggregate_rating_no_reviews",
+      "severity": "WARNING",
+      "stores": 15,
+      "prevalence": 1.4
+    },
+    {
+      "code": "hreflang_no_self",
+      "severity": "WARNING",
+      "stores": 15,
+      "prevalence": 1.4
+    },
+    {
+      "code": "no_canonical",
+      "severity": "WARNING",
+      "stores": 15,
+      "prevalence": 1.4
+    },
+    {
+      "code": "no_offer",
+      "severity": "CRITICAL",
+      "stores": 14,
+      "prevalence": 1.3
+    },
+    {
+      "code": "availability_mismatch",
+      "severity": "CRITICAL",
+      "stores": 14,
+      "prevalence": 1.3
+    },
+    {
+      "code": "html_lang_missing",
+      "severity": "INFO",
+      "stores": 13,
+      "prevalence": 1.2
+    },
+    {
+      "code": "canonical_other_product",
+      "severity": "CRITICAL",
+      "stores": 12,
+      "prevalence": 1.1
+    },
+    {
+      "code": "hreflang_conflict",
+      "severity": "WARNING",
+      "stores": 11,
+      "prevalence": 1.1
+    },
+    {
+      "code": "conflicting_products",
+      "severity": "WARNING",
+      "stores": 11,
+      "prevalence": 1.1
+    },
+    {
+      "code": "hreflang_invalid_code",
+      "severity": "WARNING",
+      "stores": 8,
+      "prevalence": 0.8
+    },
+    {
+      "code": "sitemap_lists_404",
+      "severity": "WARNING",
+      "stores": 8,
+      "prevalence": 0.8
+    },
+    {
+      "code": "no_identifiers",
+      "severity": "INFO",
+      "stores": 7,
+      "prevalence": 0.7
+    },
+    {
+      "code": "home_canonical_off",
+      "severity": "CRITICAL",
+      "stores": 7,
+      "prevalence": 0.7
+    },
+    {
+      "code": "no_https_redirect",
+      "severity": "CRITICAL",
+      "stores": 7,
+      "prevalence": 0.7
+    },
+    {
+      "code": "currency_mismatch",
+      "severity": "CRITICAL",
+      "stores": 7,
+      "prevalence": 0.7
+    },
+    {
+      "code": "sitemap_url_redirects",
+      "severity": "WARNING",
+      "stores": 6,
+      "prevalence": 0.6
+    },
+    {
+      "code": "price_valid_until_past",
+      "severity": "WARNING",
+      "stores": 5,
+      "prevalence": 0.5
+    },
+    {
+      "code": "zero_price",
+      "severity": "CRITICAL",
+      "stores": 5,
+      "prevalence": 0.5
+    },
+    {
+      "code": "pdp_http_503",
+      "severity": "WARNING",
+      "stores": 5,
+      "prevalence": 0.5
+    },
+    {
+      "code": "pdp_http_429",
+      "severity": "WARNING",
+      "stores": 5,
+      "prevalence": 0.5
+    },
+    {
+      "code": "no_sitemap",
+      "severity": "WARNING",
+      "stores": 5,
+      "prevalence": 0.5
+    },
+    {
+      "code": "mixed_content",
+      "severity": "WARNING",
+      "stores": 4,
+      "prevalence": 0.4
+    },
+    {
+      "code": "title_missing",
+      "severity": "WARNING",
+      "stores": 4,
+      "prevalence": 0.4
+    },
+    {
+      "code": "home_noindex",
+      "severity": "CRITICAL",
+      "stores": 4,
+      "prevalence": 0.4
+    },
+    {
+      "code": "canonical_hreflang_mismatch",
+      "severity": "WARNING",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "meta_robots_conflict",
+      "severity": "WARNING",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "availability_invalid",
+      "severity": "WARNING",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "no_price",
+      "severity": "CRITICAL",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "canonical_other_domain",
+      "severity": "CRITICAL",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "collection_404",
+      "severity": "WARNING",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "meta_refresh",
+      "severity": "WARNING",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "home_no_title",
+      "severity": "WARNING",
+      "stores": 3,
+      "prevalence": 0.3
+    },
+    {
+      "code": "robots_blocks_pdp",
+      "severity": "CRITICAL",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "canonical_variant",
+      "severity": "WARNING",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "robots_5xx",
+      "severity": "CRITICAL",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "canonical_not_product",
+      "severity": "CRITICAL",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "soft_404",
+      "severity": "WARNING",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "no_product_name",
+      "severity": "CRITICAL",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "viewport_missing",
+      "severity": "WARNING",
+      "stores": 2,
+      "prevalence": 0.2
+    },
+    {
+      "code": "canonical_conflict",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "mixed_content_active",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "mobile_price_mismatch",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "robots_blocks_all",
+      "severity": "CRITICAL",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "schema_image_404",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "mobile_no_schema",
+      "severity": "CRITICAL",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "pdp_http_500",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "robots_too_large",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    },
+    {
+      "code": "invalid_currency_code",
+      "severity": "WARNING",
+      "stores": 1,
+      "prevalence": 0.1
+    }
+  ]
+}

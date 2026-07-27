@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/Xoumaaa23/skills/blob/main/data/benchmark.schema.json",
+  "$id": "https://github.com/maxbuildog/skills/blob/main/data/benchmark.schema.json",
   "title": "Defect prevalence benchmark",
   "description": "How common each defect is across a sample of live e-commerce storefronts, measured per store.",
   "type": "object",
