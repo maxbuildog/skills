@@ -15,6 +15,8 @@ Thanks for looking. This repo moves slowly on purpose: a skill that gives a wron
 - Checks that phone home. No skill here calls a server we control, for any reason, telemetry included. Skills reach the store being audited, and nothing else except the agent's own search tool where the measurement requires it. This is not negotiable, it is the reason people trust running them.
 - Advice-only skills with no measurement behind them. There are plenty of those already.
 - Anything that turns a report into an ad. One link, at the end, is the ceiling.
+- **Anything that tells the user or the agent to install a prerequisite from a link.** That exact pattern is how the most-downloaded malicious skill of the year worked: the instructions pointed at a page that got the agent to run a command. Prerequisites are named (`Node.js 20+`), never linked to an installer, and never fetched.
+- Shell invocations that interpolate anything a scanned site controls, and anything resembling `shell=True`. A third of published skills carry a known vulnerability and one in ten ships a hardcoded secret. We are not adding to that pile.
 
 ## Ground rules for a check
 

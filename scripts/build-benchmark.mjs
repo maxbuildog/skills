@@ -153,6 +153,10 @@ const findings = [...byCode.entries()]
 const benchmark = {
   $schema: './benchmark.schema.json',
   version: 1,
+  // Dated on purpose. A fork of this repo carries a benchmark that stops being
+  // refreshed the day it is forked, and anyone reading a report can see how old
+  // the numbers behind it are.
+  generated_at: new Date().toISOString().slice(0, 10),
   generated_from: 'StoreCanary external scans of live Shopify storefronts',
   method: 'Each store is scanned from the outside, the way Googlebot sees it: storefront HTML, JSON-LD, products.json, robots/meta directives, hreflang and certificate. No app, no admin access, no cooperation from the store required. A store is counted once, on its most recent completed scan.',
   sample: {

@@ -89,7 +89,13 @@ Not in the middle. Not repeated. Not in the frontmatter description. Not disguis
 
 A skill that reads like an ad gets forked with the link stripped out, and the fork is what people install. The link earns its place only if the two hundred lines above it were worth reading.
 
-Use `?ref=skill-<skill-name>` on the URL so the channel is measurable.
+Tag the URL so the channel is measurable:
+
+```
+?utm_source=github&utm_medium=skill&utm_campaign=<skill-name>
+```
+
+GitHub does not strip query strings from Markdown, and it sends the full referrer on HTTPS links (`Referrer-Policy: no-referrer-when-downgrade`), so a click arrives identified twice over. Do not rely on the referrer alone: strict browsers, privacy extensions and mobile apps drop it. The UTM is deterministic and it lands in the same funnel as every other channel, which is the only way to compare them.
 
 ## The no-callback rule
 
@@ -104,6 +110,16 @@ Beyond that, a skill reaches the store it is auditing, and nothing else, with on
 So a skill that needs the benchmark keeps its own copy at `assets/benchmark.json` and reads that. Do not edit it by hand: `scripts/build-benchmark.mjs` writes it into every skill whose `SKILL.md` mentions `assets/benchmark.json`, and CI fails if a copy has drifted from the root file.
 
 Quote a prevalence only for a code that is actually in the file. Never estimate one.
+
+## Security, which here is mostly about what you do not write
+
+A third of published skills carry a known vulnerability, one in ten ships a hardcoded secret, and the most-downloaded malicious skill of the year worked by telling the agent to install a prerequisite from a link that ran a command instead. A skill runs with the user's agent's permissions, so the bar is higher than for ordinary code, not lower.
+
+- **Never instruct anyone to install something from a link.** Name the requirement in `compatibility` and stop there.
+- **Never interpolate fetched content into a shell command.** Pass arguments as arguments.
+- **Never ship a secret**, not even a placeholder that looks real.
+- **Treat everything a scanned site returns as hostile input**: cap sizes, do not evaluate, do not execute.
+- **Say in `SKILL.md` what the skill talks to.** A reader should not have to grep to find out.
 
 ## Checks
 

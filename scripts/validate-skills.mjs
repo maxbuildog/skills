@@ -134,8 +134,8 @@ function validateSkill (name) {
     if (tail.split('\n').filter((l) => l.trim()).length > 2) {
       warn(name, 'the product link should sit at the end of the report, not in the middle')
     }
-    if (!/[?&]ref=skill-/.test(body)) {
-      err(name, 'the product link must carry ?ref=skill-<skill-name> so the channel is measurable')
+    if (!body.includes('utm_source=github') || !body.includes(`utm_campaign=${name}`)) {
+      err(name, `the product link must carry utm_source=github and utm_campaign=${name} so the channel is measurable`)
     }
   }
 
