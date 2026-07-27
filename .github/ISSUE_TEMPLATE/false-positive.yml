@@ -1,0 +1,51 @@
+name: False positive
+description: A skill reported a problem that is not actually a problem
+labels: ["false-positive"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most useful report you can file. One false positive costs more trust than ten correct findings buy.
+
+  - type: input
+    id: skill
+    attributes:
+      label: Which skill
+      placeholder: shopify-store-audit
+    validations:
+      required: true
+
+  - type: input
+    id: code
+    attributes:
+      label: Finding code
+      description: The stable code shown next to the finding, for example `price_mismatch`.
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Page it was reported on
+      description: A public URL we can check. Leave blank if you cannot share it, and describe the setup instead.
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Why it is wrong
+      description: What is actually on the page, and why the finding does not apply.
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Report output
+      description: Paste the relevant part of the report.
+      render: text
+
+  - type: input
+    id: agent
+    attributes:
+      label: Agent and version
+      placeholder: Claude Code 2.x / Cursor / Codex

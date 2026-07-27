@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Xoumaaa23/skills/blob/main/data/benchmark.schema.json",
+  "title": "Defect prevalence benchmark",
+  "description": "How common each defect is across a sample of live e-commerce storefronts, measured per store.",
+  "type": "object",
+  "required": ["version", "sample", "findings"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Bumped when the scanner's check set changes. Prevalences are only comparable within one version."
+    },
+    "generated_from": { "type": "string" },
+    "method": { "type": "string" },
+    "caveats": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Known limits of the sample. Shipped with the data so they travel with any figure quoted from it."
+    },
+    "sample": {
+      "type": "object",
+      "required": ["stores", "product_pages"],
+      "properties": {
+        "stores": { "type": "integer", "minimum": 1 },
+        "product_pages": { "type": "integer", "minimum": 0 },
+        "stores_with_at_least_one_critical": { "type": "integer", "minimum": 0 },
+        "stores_with_at_least_one_finding": { "type": "integer", "minimum": 0 },
+        "share_with_critical": { "type": "number", "minimum": 0, "maximum": 100 },
+        "incomplete_scans_excluded": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "stores", "prevalence"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "description": "Stable public identifier. Retired, never repurposed."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "WARNING", "OPPORTUNITY", "INFO"],
+            "description": "Worst severity ever recorded for this code."
+          },
+          "stores": { "type": "integer", "minimum": 0 },
+          "prevalence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of sampled stores affected, in percent."
+          }
+        }
+      }
+    }
+  }
+}

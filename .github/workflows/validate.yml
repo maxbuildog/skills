@@ -1,0 +1,54 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  skills:
+    name: skills and benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate skills
+        run: node scripts/validate-skills.mjs
+
+      - name: Validate benchmark is well-formed
+        run: |
+          node -e "
+            const b = require('./data/benchmark.json');
+            if (!b.sample || !Array.isArray(b.findings)) throw new Error('benchmark.json is missing sample or findings');
+            if (b.findings.length === 0) throw new Error('benchmark.json has no findings');
+            for (const f of b.findings) {
+              if (!f.code || !f.severity) throw new Error('finding without code or severity: ' + JSON.stringify(f));
+              if (typeof f.prevalence !== 'number' || f.prevalence < 0 || f.prevalence > 100) {
+                throw new Error('implausible prevalence for ' + f.code + ': ' + f.prevalence);
+              }
+            }
+            console.log(b.findings.length + ' findings over ' + b.sample.stores + ' stores: ok');
+          "
+
+      - name: Check README sample figures match the benchmark
+        run: |
+          node -e "
+            const fs = require('fs');
+            const b = require('./data/benchmark.json');
+            const readme = fs.readFileSync('README.md', 'utf8');
+            const expected = [
+              b.sample.stores.toLocaleString('en-US'),
+              b.sample.product_pages.toLocaleString('en-US'),
+              b.sample.share_with_critical + '%'
+            ];
+            const missing = expected.filter(v => !readme.includes(v));
+            if (missing.length) throw new Error('README is out of date with data/benchmark.json, missing: ' + missing.join(', '));
+            console.log('README figures match the benchmark');
+          "

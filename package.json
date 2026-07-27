@@ -1,0 +1,15 @@
+{
+  "name": "@maxpons/skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent skills that measure an e-commerce store instead of guessing about it.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node scripts/validate-skills.mjs",
+    "benchmark": "node scripts/build-benchmark.mjs"
+  }
+}

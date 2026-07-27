@@ -1,0 +1,44 @@
+name: New check or skill
+description: Propose a defect worth detecting, or a skill worth building
+labels: ["proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open this before writing code, so we can agree on the shape first.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What goes wrong for the merchant
+      description: The failure as the merchant experiences it, not as a spec violation. "Products stop showing in Google Shopping" beats "missing property".
+    validations:
+      required: true
+
+  - type: textarea
+    id: detect
+    attributes:
+      label: How it can be detected from the public storefront
+      description: Skills here work with no app, no admin access and no API key. If detection needs any of those, it does not fit this repo.
+    validations:
+      required: true
+
+  - type: textarea
+    id: falsepositives
+    attributes:
+      label: When would this fire wrongly
+      description: Every check has a way to be wrong. Naming it up front is how the check ends up conservative.
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Vendor documentation backing it
+      description: Link to the Google, Schema.org or platform doc that says this matters.
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: The fix
+      description: What the merchant does about it, concretely, on their platform.

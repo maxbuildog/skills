@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+!.env.example
+
+# Raw scan output stays out of the repo: it contains store URLs.
+# Only the aggregate in data/benchmark.json is published.
+scan-results/
+results.json
+**/results.json

@@ -1,0 +1,45 @@
+name: Bug
+description: A skill crashed, hung, or produced nonsense
+labels: ["bug"]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Which skill
+      placeholder: shopify-store-audit
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Include the prompt you gave the agent, and the store URL if it can be shared.
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output or error
+      render: text
+
+  - type: input
+    id: env
+    attributes:
+      label: Agent and Node version
+      placeholder: Claude Code 2.x, Node 20.11, macOS
