@@ -26,8 +26,10 @@
         "stores": { "type": "integer", "minimum": 1 },
         "product_pages": { "type": "integer", "minimum": 0 },
         "stores_with_at_least_one_critical": { "type": "integer", "minimum": 0 },
+        "stores_with_at_least_one_critical_or_warning": { "type": "integer", "minimum": 0 },
         "stores_with_at_least_one_finding": { "type": "integer", "minimum": 0 },
         "share_with_critical": { "type": "number", "minimum": 0, "maximum": 100 },
+        "share_with_critical_or_warning": { "type": "number", "minimum": 0, "maximum": 100 },
         "incomplete_scans_excluded": { "type": "integer", "minimum": 0 }
       }
     },
@@ -46,7 +48,18 @@
           "severity": {
             "type": "string",
             "enum": ["CRITICAL", "WARNING", "OPPORTUNITY", "INFO"],
-            "description": "Worst severity ever recorded for this code."
+            "description": "The severity most affected stores actually got. Severity is a property of the instance, not of the code: the same code is rated differently depending on what was found. Ties break towards the worse severity."
+          },
+          "severity_breakdown": {
+            "type": "object",
+            "description": "Affected stores split by the severity they were rated at. Read this before quoting a code as critical: a code can be dominated by its mild variant.",
+            "additionalProperties": false,
+            "properties": {
+              "CRITICAL": { "type": "integer", "minimum": 0 },
+              "WARNING": { "type": "integer", "minimum": 0 },
+              "OPPORTUNITY": { "type": "integer", "minimum": 0 },
+              "INFO": { "type": "integer", "minimum": 0 }
+            }
           },
           "stores": { "type": "integer", "minimum": 0 },
           "prevalence": {

@@ -33,6 +33,24 @@ jobs:
               if (typeof f.prevalence !== 'number' || f.prevalence < 0 || f.prevalence > 100) {
                 throw new Error('implausible prevalence for ' + f.code + ': ' + f.prevalence);
               }
+              // The headline severity must be one the data actually contains, and the
+              // breakdown must account for every affected store. Without this, a code
+              // could advertise CRITICAL while no store was ever rated critical for it.
+              const split = f.severity_breakdown;
+              if (!split || typeof split !== 'object') {
+                throw new Error('finding without severity_breakdown: ' + f.code);
+              }
+              const total = Object.values(split).reduce((a, n) => a + n, 0);
+              if (total !== f.stores) {
+                throw new Error('severity_breakdown for ' + f.code + ' sums to ' + total + ' but ' + f.stores + ' stores are affected');
+              }
+              if (!(f.severity in split)) {
+                throw new Error('finding ' + f.code + ' is labelled ' + f.severity + ' but no store was rated that: ' + JSON.stringify(split));
+              }
+              const top = Math.max(...Object.values(split));
+              if (split[f.severity] !== top) {
+                throw new Error('finding ' + f.code + ' is labelled ' + f.severity + ' (' + split[f.severity] + ' stores) but that is not the dominant severity: ' + JSON.stringify(split));
+              }
             }
             console.log(b.findings.length + ' findings over ' + b.sample.stores + ' stores: ok');
           "

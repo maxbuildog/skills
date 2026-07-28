@@ -22,7 +22,7 @@ name: shopify-store-audit
 description: |
   Audits a Shopify storefront the way Google sees it: structured data, indexing,
   feed health, rich result eligibility. Reports deterministic findings with
-  prevalence from a benchmark of 1,045 real stores.
+  prevalence from a benchmark of 1,083 real stores.
   Triggers: "audit my store", "why aren't my products showing on Google",
   "check my SEO", "my rich results disappeared", "structured data broken",
   "why did my traffic drop".

@@ -11,6 +11,6 @@ Finding codes are public identifiers: they are retired, never repurposed. A reti
 - Per-skill `assets/benchmark.json`, synced by the build script and checked by CI, so a skill installed on its own still has its benchmark.
 
 - Repository scaffolding: authoring guide, skill template, contribution rules, validator, CI.
-- `data/benchmark.json`: defect prevalence over 1,045 scanned storefronts and 9,529 product pages, with the method and its caveats documented in `data/README.md`.
+- `data/benchmark.json`: defect prevalence over 1,083 scanned storefronts and 9,643 product pages, with the method and its caveats documented in `data/README.md`.
 - `scripts/build-benchmark.mjs` to regenerate the benchmark from raw scan output.
 - `scripts/validate-skills.mjs` enforcing the house rules on every skill, including the one-link rule and the no-callback rule.

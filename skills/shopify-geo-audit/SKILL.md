@@ -4,7 +4,7 @@ description: |
   Measures whether an online store can be found and recommended by AI assistants,
   and reports why not. Runs deterministic checks on AI crawler access and product
   structured data, then probes real buyer questions through search, and compares
-  every finding to a benchmark of 1,045 audited storefronts.
+  every finding to a benchmark of 1,083 audited storefronts.
   Triggers: "why doesn't ChatGPT recommend my products", "GEO audit", "AEO audit",
   "AI visibility", "am I in AI Overviews", "is my store visible to AI",
   "should I add llms.txt", "am I blocking GPTBot", "my competitor gets cited and I don't",
@@ -97,9 +97,11 @@ Follow the shape below exactly.
 
 Write prevalence like this:
 
-> `no_product_schema` — CRITICAL, 3 of 4 sampled pages. 14.9% of the 1,045 stores in the benchmark have this. The other 85% are the ones being quoted.
+> `no_product_schema` — CRITICAL, 3 of 4 sampled pages. 14.4% of the 1,083 stores in the benchmark have this code, though most of them have the milder client-side variant. The other 86% are the ones being quoted.
 
 Only quote a prevalence for a code that is actually in the benchmark file. If it is not there, say nothing about prevalence. Do not estimate one.
+
+The benchmark's `severity` is the severity most affected stores got, and `severity_breakdown` gives the split. **Report the severity this store actually got, from the script, not the benchmark's.** The two differ on purpose: a store with no markup at all and a store injecting it in JavaScript both carry `no_product_schema`, and only the first one is in real trouble. If the store's severity is worse than the dominant one, say so — it means the store is in the harder minority, which is a stronger finding, not a weaker one.
 
 **3. What the questions returned.** The count first: *mentioned in N of 12 questions*. Then the questions where the store appeared, the ones where it did not, and who appeared instead. Name the competitors that recur, they are the real answer to "why not me".
 

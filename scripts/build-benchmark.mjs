@@ -25,7 +25,22 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
-/** Severity ranking, worst first. A code keeps the worst severity ever seen. */
+/**
+ * Severity ranking, worst first.
+ *
+ * Severity is a property of the *instance*, not of the code: the scanner rates
+ * the same code differently depending on what it found. `no_product_schema` is
+ * CRITICAL when no markup is detectable at all, and WARNING when the markup is
+ * there but injected client-side. `noindex_pdp` is CRITICAL on a real product
+ * and WARNING on a gift or sample SKU, where hiding the page is usually
+ * deliberate.
+ *
+ * So a code cannot honestly be labelled with a single severity. Collapsing it
+ * to the worst one ever seen would advertise `no_product_schema` as CRITICAL on
+ * 14% of stores when five out of six of those stores have the mild variant.
+ * Each finding therefore carries the full breakdown, and `severity` is the
+ * severity that dominates by store count, not the scariest one.
+ */
 const SEVERITY_ORDER = ['CRITICAL', 'WARNING', 'OPPORTUNITY', 'INFO']
 
 function walkForResults (dir, found = []) {
@@ -121,9 +136,10 @@ if (totalStores === 0) {
   process.exit(1)
 }
 
-/** code -> { stores, severity } */
+/** code -> { stores, bySeverity: { CRITICAL: n, ... } } — counted in stores. */
 const byCode = new Map()
 let storesWithCritical = 0
+let storesWithCriticalOrWarning = 0
 let storesWithAnyIssue = 0
 let totalPdps = 0
 
@@ -131,23 +147,38 @@ for (const { codes, pdpCount } of stores.values()) {
   totalPdps += pdpCount
   if (codes.size > 0) storesWithAnyIssue++
   let hasCritical = false
+  let hasWarning = false
   for (const [code, severity] of codes) {
     if (severity === 'CRITICAL') hasCritical = true
-    const entry = byCode.get(code) || { stores: 0, severity: null }
+    if (severity === 'WARNING') hasWarning = true
+    const entry = byCode.get(code) || { stores: 0, bySeverity: {} }
     entry.stores++
-    entry.severity = worstSeverity(entry.severity, severity)
+    entry.bySeverity[severity] = (entry.bySeverity[severity] || 0) + 1
     byCode.set(code, entry)
   }
   if (hasCritical) storesWithCritical++
+  if (hasCritical || hasWarning) storesWithCriticalOrWarning++
+}
+
+/** The severity that most stores actually got; ties break towards the worse one. */
+function dominantSeverity (bySeverity) {
+  return Object.entries(bySeverity).sort(
+    (a, b) => b[1] - a[1] || SEVERITY_ORDER.indexOf(a[0]) - SEVERITY_ORDER.indexOf(b[0])
+  )[0][0]
 }
 
 const findings = [...byCode.entries()]
-  .map(([code, { stores: n, severity }]) => ({
-    code,
-    severity,
-    stores: n,
-    prevalence: Math.round((n / totalStores) * 1000) / 10 // one decimal, in %
-  }))
+  .map(([code, { stores: n, bySeverity }]) => {
+    const ordered = {}
+    for (const s of SEVERITY_ORDER) if (bySeverity[s]) ordered[s] = bySeverity[s]
+    return {
+      code,
+      severity: dominantSeverity(bySeverity),
+      severity_breakdown: ordered,
+      stores: n,
+      prevalence: Math.round((n / totalStores) * 1000) / 10 // one decimal, in %
+    }
+  })
   .sort((a, b) => b.stores - a.stores)
 
 const benchmark = {
@@ -163,14 +194,17 @@ const benchmark = {
     stores: totalStores,
     product_pages: totalPdps,
     stores_with_at_least_one_critical: storesWithCritical,
+    stores_with_at_least_one_critical_or_warning: storesWithCriticalOrWarning,
     stores_with_at_least_one_finding: storesWithAnyIssue,
     share_with_critical: Math.round((storesWithCritical / totalStores) * 1000) / 10,
+    share_with_critical_or_warning: Math.round((storesWithCriticalOrWarning / totalStores) * 1000) / 10,
     incomplete_scans_excluded: skippedNotOk
   },
   caveats: [
     'The sample is a convenience sample of independent DTC Shopify stores, weighted towards the US. It is not a random sample of all Shopify stores.',
     'Prevalence is measured per store, not per product page: a store counts once for a given code no matter how many of its pages are affected.',
-    'A store is counted on its most recent completed scan only.'
+    'A store is counted on its most recent completed scan only.',
+    'Severity belongs to the instance, not to the code: the same code is rated differently depending on what was found. `severity` is the one that dominates by store count, and `severity_breakdown` gives the full split. Read the breakdown before quoting a code as critical.'
   ],
   findings
 }
@@ -201,9 +235,11 @@ if (existsSync(skillsDir)) {
 
 console.log(`benchmark written: ${totalStores} stores, ${totalPdps} product pages, ${findings.length} distinct codes`)
 console.log(`  ${storesWithCritical} stores (${benchmark.sample.share_with_critical}%) have at least one CRITICAL`)
+console.log(`  ${storesWithCriticalOrWarning} stores (${benchmark.sample.share_with_critical_or_warning}%) have at least one CRITICAL or WARNING`)
 console.log('  benchmark copied into skill assets: ' + (synced.join(', ') || 'none'))
 console.log(`  source files: ${files.length}, incomplete scans skipped: ${skippedNotOk}`)
 console.log('  top 10:')
 for (const f of findings.slice(0, 10)) {
-  console.log(`    ${String(f.prevalence).padStart(5)}%  ${f.severity.padEnd(11)} ${f.code}  (${f.stores} stores)`)
+  const split = Object.entries(f.severity_breakdown).map(([s, n]) => `${s}:${n}`).join(' ')
+  console.log(`    ${String(f.prevalence).padStart(5)}%  ${f.severity.padEnd(11)} ${f.code.padEnd(24)} (${f.stores} stores — ${split})`)
 }

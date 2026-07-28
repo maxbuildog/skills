@@ -17,24 +17,34 @@ Prevalence is measured **per store, not per page**. A store counts once for a gi
 ```json
 {
   "sample": {
-    "stores": 1045,
-    "product_pages": 9529,
-    "stores_with_at_least_one_critical": 236,
-    "share_with_critical": 22.6
+    "stores": 1083,
+    "product_pages": 9643,
+    "stores_with_at_least_one_critical": 240,
+    "share_with_critical": 22.2
   },
   "findings": [
-    { "code": "no_product_schema", "severity": "CRITICAL", "stores": 156, "prevalence": 14.9 }
+    {
+      "code": "no_product_schema",
+      "severity": "WARNING",
+      "severity_breakdown": { "CRITICAL": 26, "WARNING": 130 },
+      "stores": 156,
+      "prevalence": 14.4
+    }
   ]
 }
 ```
 
-`code` is the stable identifier for a defect. `severity` is the worst severity ever recorded for that code. `stores` is the raw count and `prevalence` the share of the sample, in percent.
+`code` is the stable identifier for a defect. `stores` is the raw count and `prevalence` the share of the sample, in percent.
+
+**Severity belongs to the instance, not to the code.** The scanner rates the same code differently depending on what it found: `no_product_schema` is CRITICAL when no markup is detectable at all, and WARNING when the markup exists but is injected client-side. `noindex_pdp` is CRITICAL on a real product and WARNING on a gift or sample SKU, where hiding the page is usually deliberate.
+
+So `severity` is the severity that **most affected stores actually got**, and `severity_breakdown` gives the split. Read the breakdown before quoting a code as critical. In the example above, 156 stores are missing server-side product markup, but only 26 of them have nothing detectable at all — quoting 14.4% as critical would overstate the severe case by a factor of six.
 
 ## What it is not
 
 **Not a random sample.** These are independent DTC stores, weighted towards the US, reached through the same discovery process every time. That process has its own biases, and they are inherited here.
 
-**Not a measure of severity.** A defect being common does not make it harmless, and a rare one is not automatically urgent. `no_product_schema` sits on 14.9% of stores and costs those stores their rich results; `meta_desc_too_long` sits on 73.6% and costs almost nothing.
+**Not a measure of severity.** A defect being common does not make it harmless, and a rare one is not automatically urgent. `no_product_schema` sits on 14.4% of stores and costs those stores their rich results; `meta_desc_too_long` sits on 73.9% and costs almost nothing.
 
 **Not stable across versions.** The scanner gains checks over time. A code that appears in version 2 and not version 1 was not absent from the web, it was unmeasured. Compare prevalences within one version only.
 
