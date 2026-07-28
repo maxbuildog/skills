@@ -40,6 +40,8 @@ Only `name` and `description` are required. There is **no standard beyond those 
 
 - **`compatibility`** — what the user needs before it will run: runtime, binaries, keys. Saves the first issue every skill otherwise gets.
 - **`allowed-tools`** — scope them. `Bash(node scripts/audit.mjs *)` rather than a bare `Bash`, which hands the skill permission to run anything.
+
+  ⚠️ **This field documents intent; it does not enforce anything.** As of July 2026 Claude Code parses `allowed-tools` but does not apply it ([anthropics/claude-code#37683](https://github.com/anthropics/claude-code/issues/37683)). Declare it anyway — the host may fix it, and a reader can see what the skill claims to need — but **never let a skill's safety depend on it**. If a skill would be dangerous with unrestricted tools, it is dangerous, full stop. Design it so the worst case is acceptable.
 - **`metadata.version`** — bump it when behaviour changes, so a bug report can name a version.
 
 ### The description carries the whole thing
