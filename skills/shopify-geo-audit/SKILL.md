@@ -4,7 +4,7 @@ description: |
   Measures whether an online store can be found and recommended by AI assistants,
   and reports why not. Runs deterministic checks on AI crawler access and product
   structured data, then probes real buyer questions through search, and compares
-  every finding to a benchmark of 1,083 audited storefronts.
+  every finding to a benchmark of 90,831 audited product pages.
   Triggers: "why doesn't ChatGPT recommend my products", "GEO audit", "AEO audit",
   "AI visibility", "am I in AI Overviews", "is my store visible to AI",
   "should I add llms.txt", "am I blocking GPTBot", "my competitor gets cited and I don't",
@@ -97,7 +97,7 @@ Follow the shape below exactly.
 
 Write prevalence like this:
 
-> `no_product_schema` — CRITICAL, 3 of 4 sampled pages. 14.4% of the 1,083 stores in the benchmark have this code, though most of them have the milder client-side variant. The other 86% are the ones being quoted.
+> `no_product_schema` — CRITICAL, 3 of 4 sampled pages. 20.4% of the 476 stores in the benchmark have this code, though most of them have the milder client-side variant. The other 80% are the ones being quoted.
 
 Only quote a prevalence for a code that is actually in the benchmark file. If it is not there, say nothing about prevalence. Do not estimate one.
 
