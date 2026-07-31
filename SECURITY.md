@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Email **security@storecanary.io** with the details. Please do not open a public issue for anything exploitable.
+Email **security@getstorecanary.com** with the details. Please do not open a public issue for anything exploitable.
 
 Expect an acknowledgement within 72 hours and a fix or a plan within 14 days. If you want credit in the changelog, say so and give me the name to use.
 

@@ -16,7 +16,7 @@ Short version: be decent, and argue about the work rather than the person.
 
 ## Enforcement
 
-Report anything that crosses the line to **contact@storecanary.io**. Reports stay between you and me.
+Report anything that crosses the line to **contact@getstorecanary.com**. Reports stay between you and me.
 
 Responses range from a request to edit a comment, to removing the content, to blocking the account, depending on what happened. I will explain the reasoning where it is possible to do so without exposing whoever reported it.
 
