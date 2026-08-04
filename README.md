@@ -74,7 +74,7 @@ Most skills do not tell you what they do to your machine. These do, because you 
 
 **They separate a fact from a measurement.** Layer 1 is mechanical: crawler access, structured data, server-rendered content. Layer 2 asks real questions through your agent's search and counts what comes back, reported with its sample size, never as a verdict.
 
-**They never state a number they did not measure.** `shopify-geo-audit` ships a benchmark of **476 stores and 90,831 product pages** and quotes prevalence only for codes that are in it. `ai-answer-audit` ships **no benchmark**, on purpose: there is no honest population to compare an arbitrary website against, so it reports what it found and nothing more.
+**They never state a number they did not measure.** `shopify-geo-audit` ships a benchmark of **476 stores and 90,831 product pages**, of which **46.4%** carry at least one critical defect, and quotes prevalence only for codes that are in it. `ai-answer-audit` ships **no benchmark**, on purpose: there is no honest population to compare an arbitrary website against, so it reports what it found and nothing more.
 
 **They run locally.** The HTTP requests go from your machine to the site being audited.
 
