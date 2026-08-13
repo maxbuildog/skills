@@ -1,9 +1,9 @@
 # skills
 
-Agent skills that **measure** instead of guessing. Deterministic checks with, where honest, prevalence from real scans. E-commerce and AI answer visibility today, more domains as they land.
+Agent skills built from real production, not intuition. Deterministic checks with, where honest, prevalence from real scans, plus battle-tested operational playbooks. Store SEO and AI answer visibility, and the tooling for running agents reliably. More domains as they land.
 
 [![validate](https://github.com/maxbuildog/skills/actions/workflows/validate.yml/badge.svg)](https://github.com/maxbuildog/skills/actions/workflows/validate.yml)
-[![skills](https://img.shields.io/badge/skills-2-blue)](skills)
+[![skills](https://img.shields.io/badge/skills-3-blue)](skills)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## The problem
@@ -48,6 +48,7 @@ Or clone the repo and copy the folder you want into `~/.claude/skills/` (persona
 |---|---|---|
 | [`ai-answer-audit`](skills/ai-answer-audit) | Can AI assistants read and cite my site, and do they, or do they cite someone else? Any website. | Available |
 | [`shopify-geo-audit`](skills/shopify-geo-audit) | Do ChatGPT, Perplexity and AI Overviews recommend my products, or my competitor's? Shopify, with prevalence from real stores. | Available |
+| [`telegram-channel-watchdog`](skills/telegram-channel-watchdog) | Why did my Telegram agent go silent while every status light stayed green, and how do I keep it alive? Agent ops, not a site audit. | Available |
 | `shopify-store-audit` | What does Google actually see on my store, and what is broken? | Planned |
 | `shopify-feed-doctor` | Why is Merchant Center disapproving my products? | Planned |
 
@@ -65,6 +66,8 @@ Most skills do not tell you what they do to your machine. These do, because you 
 | **What is written** | Nothing outside the working directory you run it in. |
 | **What is read** | Public URLs only: HTML, `robots.txt`, `sitemap.xml`, `llms.txt`, and for the Shopify skill `products.json`. |
 | **Runtime** | Node.js 20+ for skills that ship scripts. |
+
+> This table describes the **audit skills**. Operational skills such as [`telegram-channel-watchdog`](skills/telegram-channel-watchdog) have a different footprint by nature: they need your own service credentials (for example a Telegram bot token) and shell access to the host they supervise. Every skill states its exact requirements in its own `SKILL.md` `compatibility` field, so read it before you run it.
 
 ⚠️ **On `allowed-tools`.** Skills here declare an `allowed-tools` line scoping what the agent may run. As of July 2026 **Claude Code parses that field but does not enforce it** ([anthropics/claude-code#37683](https://github.com/anthropics/claude-code/issues/37683)). We declare it anyway because it documents intent and the host may fix it — but **do not treat it as a sandbox**. The real guarantee is the one above: read-only HTTP to the site being audited, and no server of ours in the path.
 
