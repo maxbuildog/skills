@@ -26,6 +26,8 @@ metadata:
 
 # Telegram channel watchdog
 
+![Terminal demo: systemctl reads active while three Telegram messages sit unread; the watchdog finds the dead poller, restarts it, and all three are delivered.](assets/demo.gif)
+
 Keep an agent that talks to you on Telegram alive, and know which of the three
 silences you are looking at when it goes quiet. Written from two production
 channels that ran for months, and two real outages.
