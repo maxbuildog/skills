@@ -17,10 +17,10 @@ Prevalence is measured **per store, not per page**. A store counts once for a gi
 ```json
 {
   "sample": {
-    "stores": 1083,
-    "product_pages": 9643,
-    "stores_with_at_least_one_critical": 240,
-    "share_with_critical": 22.2
+    "stores": 476,
+    "product_pages": 90831,
+    "stores_with_at_least_one_critical": 221,
+    "share_with_critical": 46.4
   },
   "findings": [
     {

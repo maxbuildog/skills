@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+
+<!--
+  TEMPLATE for the visual-explainer skill.
+  HOW TO USE
+  1. Copy this file. Replace every {{placeholder}}. Delete the blocks you do not use
+     (express mode keeps blocks 1, 2, 4, 5, 7 and 10, plus 8 if anything can fail in production) and delete the whole
+     <template id="patterns"> section at the bottom once you have pasted the diagram you need.
+  2. Keep the <meta charset>. Without it, accented characters break when the file is
+     opened by double-click.
+  3. No network request of any kind: no CDN, no remote font, no external image.
+     Images, if any, are data: URIs.
+  4. Colors are tokens on :root. Re-derive the accent and the neutrals from the world of
+     the subject (see SKILL.md, step 5). Keep green, amber and red for meaning only.
+  5. Set lang on <html> to the reader's language and write the <title> in that language.
+  6. Keep the hidden <svg> with the arrowhead marker at the top of <body> as long as any
+     diagram uses arrows.
+  7. Delete this comment before delivering.
+-->
+
+<style>
+/* Theme tokens. Light palette on bare :root, redefined for dark twice (system
+   preference and explicit choice). Never define a color only inside a media query. */
+:root{
+  --bg:#faf9f7; --bg-soft:#f1efeb; --card:#ffffff; --line:#e0dbd2;
+  --ink:#1d1b19; --ink-2:#4f4a44; --ink-3:#7f786f;
+  --accent:#2f5d8a; --accent-soft:#e6eef6;
+  --ok:#1f7a4d; --ok-soft:#e4f4ec;
+  --warn:#9a5b0a; --warn-soft:#fbeedd;
+  --stop:#a8322a; --stop-soft:#fbe9e7;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161618; --bg-soft:#1e1e21; --card:#202024; --line:#34343b;
+    --ink:#efedea; --ink-2:#bcb7b0; --ink-3:#8a847c;
+    --accent:#8fb8e0; --accent-soft:#1f2c3a;
+    --ok:#63c898; --ok-soft:#17301f; --warn:#e0a45c; --warn-soft:#33260f;
+    --stop:#f08a80; --stop-soft:#331d1b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161618; --bg-soft:#1e1e21; --card:#202024; --line:#34343b;
+  --ink:#efedea; --ink-2:#bcb7b0; --ink-3:#8a847c;
+  --accent:#8fb8e0; --accent-soft:#1f2c3a;
+  --ok:#63c898; --ok-soft:#17301f; --warn:#e0a45c; --warn-soft:#33260f;
+  --stop:#f08a80; --stop-soft:#331d1b;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif);
+     font-size:18px; line-height:1.65; -webkit-text-size-adjust:100%}
+.wrap{width:min(800px,100%); margin:0 auto; padding:0 20px 96px}
+p{margin:0 0 1em}
+a{color:var(--accent)}
+strong{font-weight:700}
+h1,h2,h3{line-height:1.25; letter-spacing:-.01em; margin:0}
+h1{font-size:clamp(2rem,5vw,2.7rem); font-weight:700}
+h2{font-size:clamp(1.35rem,3.4vw,1.7rem); font-weight:700; margin:56px 0 6px;
+   padding-top:18px; border-top:1px solid var(--line)}
+h3{font-family:var(--sans); font-size:1rem; font-weight:700; margin:0 0 4px}
+.lede{color:var(--ink-2); font-size:1.05rem; margin:0 0 24px}
+.sans{font-family:var(--sans)}
+
+/* Header */
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans); font-size:.75rem; font-weight:700; letter-spacing:.1em;
+        text-transform:uppercase; color:var(--accent); margin-bottom:14px}
+.status{display:inline-flex; align-items:center; gap:8px; font-family:var(--sans);
+        font-size:.86rem; font-weight:650; padding:5px 12px; border-radius:999px;
+        border:1px solid var(--line); background:var(--card)}
+.status::before{content:""; width:9px; height:9px; border-radius:50%; background:var(--ink-3)}
+.status.live::before{background:var(--ok)}
+.status.partial::before{background:var(--warn)}
+.status.proto::before{background:var(--stop)}
+.facts{display:flex; flex-wrap:wrap; gap:10px 28px; margin:22px 0 4px; padding:0; list-style:none;
+       font-family:var(--sans)}
+.facts li b{display:block; font-size:1.5rem; font-weight:700; letter-spacing:-.02em; line-height:1.2}
+.facts li span{display:block; color:var(--ink-3); font-size:.82rem}
+.meta{color:var(--ink-3); font-family:var(--sans); font-size:.85rem; margin-top:14px}
+
+/* Sticky table of contents */
+nav.toc{position:sticky; top:0; z-index:20; margin:32px 0 0; background:var(--bg);
+        border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+        padding:9px 0; overflow-x:auto; white-space:nowrap;
+        scrollbar-width:thin; scrollbar-color:var(--line) transparent}
+nav.toc a{display:inline-block; color:var(--ink-2); text-decoration:none; font-family:var(--sans);
+          font-size:.85rem; font-weight:600; padding:4px 11px; border-radius:6px}
+nav.toc a:hover{background:var(--bg-soft); color:var(--ink)}
+
+/* Building blocks */
+.card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px}
+.grid2{display:flex; flex-wrap:wrap; gap:16px; margin:20px 0}
+.grid2>*{flex:1 1 260px}
+.grid3{display:flex; flex-wrap:wrap; gap:16px; margin:20px 0}
+.grid3>*{flex:1 1 210px}
+
+/* Before / after (block 2) */
+.before{border-left:4px solid var(--stop)}
+.after{border-left:4px solid var(--ok)}
+.before h3,.after h3{font-size:.76rem; letter-spacing:.09em; text-transform:uppercase; margin-bottom:10px}
+.before h3{color:var(--stop)} .after h3{color:var(--ok)}
+.before ul,.after ul{margin:0; padding-left:20px; font-size:.97rem} .before li,.after li{margin-bottom:7px}
+.gain{background:var(--accent-soft); border-radius:10px; padding:13px 18px; font-family:var(--sans);
+      font-weight:600; border:1px solid var(--line)}
+
+/* Master analogy (block 3) */
+.analogy{background:var(--accent-soft); border:1px solid var(--line); border-radius:10px;
+         padding:22px 24px; margin:20px 0}
+.analogy .lead{font-size:1.1rem; margin:0 0 14px}
+
+/* Tables */
+.tbl{width:100%; border-collapse:collapse; font-family:var(--sans); font-size:.93rem; margin:16px 0}
+.tbl th{text-align:left; font-size:.74rem; letter-spacing:.08em; text-transform:uppercase;
+        color:var(--ink-3); font-weight:700; padding:8px 12px; border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch}
+
+/* Diagrams (block 4). Classes below follow the theme inside the SVG. */
+figure.diagram{margin:22px 0; background:var(--card); border:1px solid var(--line);
+               border-radius:10px; padding:22px 16px}
+figure.diagram svg{display:block; width:100%; height:auto; min-width:520px; margin:0 auto}
+figure.diagram figcaption{color:var(--ink-2); font-family:var(--sans); font-size:.9rem;
+                          margin-top:16px; padding:0 6px}
+.s-box{fill:var(--card); stroke:var(--line)}
+.s-box-accent{fill:var(--accent-soft); stroke:var(--accent)}
+.s-box-warn{fill:var(--warn-soft); stroke:var(--warn)}
+.s-box-dashed{fill:var(--card); stroke:var(--warn); stroke-dasharray:5 4}
+.s-label{fill:var(--ink); font-family:var(--sans); font-size:13.5px; font-weight:650}
+.s-sub{fill:var(--ink-3); font-family:var(--sans); font-size:11.5px}
+.s-arrow{stroke:var(--ink-3); stroke-width:1.6; fill:none}
+.s-head{fill:var(--ink-3)}
+.s-arrow-lbl{fill:var(--ink-3); font-family:var(--sans); font-size:11px; font-style:italic}
+
+/* Walk-through (block 5) */
+ol.walk{list-style:none; counter-reset:step; margin:20px 0; padding:0}
+ol.walk li{counter-increment:step; position:relative; padding:0 0 22px 50px}
+ol.walk li::before{content:counter(step); position:absolute; left:0; top:0; width:32px; height:32px;
+  display:grid; place-items:center; border-radius:50%; background:var(--ink); color:var(--bg);
+  font-family:var(--sans); font-weight:700; font-size:.92rem}
+ol.walk li::after{content:""; position:absolute; left:15.5px; top:38px; bottom:4px; width:1.5px; background:var(--line)}
+ol.walk li:last-child::after{display:none}
+ol.walk p{margin:0; color:var(--ink-2); font-size:.98rem}
+.who{display:inline-block; font-family:var(--sans); font-size:.74rem; font-weight:700; color:var(--accent);
+     background:var(--accent-soft); padding:2px 8px; border-radius:5px; margin-left:6px; vertical-align:1px}
+
+/* Parts (block 6). The tag must carry TRUE information: a cadence, a state, an order. */
+.part{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px}
+.tag{display:inline-block; font-family:var(--sans); font-size:.7rem; font-weight:700; letter-spacing:.07em;
+     text-transform:uppercase; color:var(--ink-2); border:1px solid var(--line); border-radius:5px;
+     padding:2px 8px; margin-bottom:10px}
+.part dl{margin:12px 0 0; font-family:var(--sans); font-size:.9rem}
+.part dt{color:var(--ink-3); font-size:.72rem; letter-spacing:.07em; text-transform:uppercase;
+         font-weight:700; margin-top:10px}
+.part dd{margin:1px 0 0; color:var(--ink-2)}
+
+/* Folded technical detail */
+details.tech{margin-top:14px; border-top:1px dashed var(--line); padding-top:10px}
+details.tech summary{cursor:pointer; font-family:var(--sans); font-size:.84rem; font-weight:650;
+                     color:var(--ink-3); list-style:none; display:flex; align-items:center; gap:6px}
+details.tech summary::-webkit-details-marker{display:none}
+details.tech summary::before{content:"\25B8"; transition:transform .15s}
+details.tech[open] summary::before{transform:rotate(90deg)}
+details.tech .body{margin-top:10px; font-family:var(--sans); font-size:.88rem; color:var(--ink-2)}
+code,kbd{font-family:var(--mono); font-size:.85em; background:var(--bg-soft); border:1px solid var(--line);
+         border-radius:4px; padding:1px 5px}
+pre{background:var(--bg-soft); border:1px solid var(--line); border-radius:8px; padding:12px 14px;
+    overflow-x:auto; font-size:.82rem; line-height:1.5}
+pre code{background:none; border:0; padding:0}
+
+/* Actions (block 7) */
+.action{border-radius:10px; padding:18px 20px; border:1px solid var(--line); background:var(--card)}
+.action h3{font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px}
+.action ul{margin:0; padding-left:18px; font-size:.95rem} .action li{margin-bottom:8px}
+
+/* Failures and limits (block 8) */
+.limits{background:var(--warn-soft); border:1px solid var(--line); border-left:4px solid var(--warn);
+        border-radius:10px; padding:18px 22px; margin:20px 0}
+.limits h3{color:var(--warn); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px}
+.limits ul{margin:0; padding-left:18px; font-size:.96rem} .limits li{margin-bottom:7px}
+
+/* Glossary (block 9) */
+dl.glossary{margin:16px 0; display:grid; grid-template-columns:fit-content(40%) 1fr; font-family:var(--sans)}
+dl.glossary dt{font-weight:700; padding:10px 14px 10px 0; border-bottom:1px solid var(--line)}
+dl.glossary dd{margin:0; padding:10px 0; color:var(--ink-2); border-bottom:1px solid var(--line); font-size:.95rem}
+@media (max-width: 520px){
+  dl.glossary{grid-template-columns:1fr}
+  dl.glossary dt{border-bottom:0; padding-bottom:0}
+}
+
+/* Check yourself (block 10) */
+.quiz{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 22px}
+.quiz details{border-bottom:1px solid var(--line); padding:16px 0}
+.quiz details:last-child{border-bottom:0}
+.quiz summary{cursor:pointer; font-weight:700; list-style:none; display:flex; gap:10px}
+.quiz summary::-webkit-details-marker{display:none}
+.quiz summary::before{content:"?"; flex:0 0 22px; height:22px; border-radius:50%; background:var(--accent-soft);
+  color:var(--accent); display:grid; place-items:center; font-family:var(--sans); font-size:.8rem; font-weight:700; margin-top:2px}
+.quiz .answer{margin:12px 0 0 32px; color:var(--ink-2); font-size:.97rem; border-left:3px solid var(--ok); padding-left:14px}
+
+footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--line); color:var(--ink-3);
+       font-family:var(--sans); font-size:.85rem}
+
+@media print{ nav.toc{display:none} body{font-size:12pt} }
+</style>
+</head>
+
+<body>
+<!-- Shared definitions for every diagram pattern: keep this hidden svg while any diagram uses arrows. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path class="s-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+</svg>
+<div class="wrap">
+
+<!-- BLOCK 1: ONE SENTENCE -->
+<header class="hero">
+  <div class="kicker">{{area or project}}</div>
+  <h1>{{Title in everyday words, not a code name}}</h1>
+  <p class="lede">{{One sentence, 20 words at most: what it does, for whom, why.}}</p>
+  <span class="status live">Running in production</span>
+  <!-- variants: <span class="status partial">Built, not connected yet</span>
+                 <span class="status proto">Prototype</span>
+                 <span class="status">Decision only, nothing built</span> -->
+  <ul class="facts">
+    <li><b>{{3}}</b><span>{{messages stuck in the sample case}}</span></li>
+    <li><b>{{every 2 min}}</b><span>{{how often it checks}}</span></li>
+  </ul>
+  <p class="meta">Written {{YYYY-MM-DD}} · {{6}} minute read · technical details are folded, you can read everything without clicking.</p>
+</header>
+
+<nav class="toc">
+  <a href="#problem">The problem</a>
+  <a href="#image">The picture</a>
+  <a href="#map">The map</a>
+  <a href="#case">One real case</a>
+  <a href="#parts">The parts</a>
+  <a href="#you">For you</a>
+  <a href="#breaks">When it breaks</a>
+  <a href="#glossary">Glossary</a>
+  <a href="#quiz">Check yourself</a>
+</nav>
+
+<!-- BLOCK 2: THE PROBLEM -->
+<h2 id="problem">The problem this solves</h2>
+<p class="lede">{{One line of context.}}</p>
+<div class="grid2">
+  <div class="card before">
+    <h3>Before</h3>
+    <ul><li>{{A physical, concrete gesture the reader recognizes.}}</li><li>{{...}}</li></ul>
+  </div>
+  <div class="card after">
+    <h3>Now</h3>
+    <ul><li>{{What happens instead.}}</li><li>{{...}}</li></ul>
+  </div>
+</div>
+<p class="gain">{{The gain, as a number if it was measured. Otherwise: "not measured".}}</p>
+
+<!-- BLOCK 3: THE MASTER ANALOGY -->
+<h2 id="image">The picture to keep in mind</h2>
+<div class="analogy">
+  <p class="lead">{{Think of it as ... (3 to 5 lines, ONE metaphor, kept to the end of the page).}}</p>
+  <table class="tbl">
+    <thead><tr><th>In the system</th><th>In the picture</th></tr></thead>
+    <tbody>
+      <tr><td>{{...}}</td><td>{{...}}</td></tr>
+      <tr><td>{{...}}</td><td>{{...}}</td></tr>
+    </tbody>
+  </table>
+  <p class="sans" style="margin:12px 0 0; font-size:.9rem; color:var(--ink-2)"><strong>Where the picture stops:</strong> {{the honest limit of the metaphor}}</p>
+</div>
+
+<!-- BLOCK 4: THE MAP -->
+<h2 id="map">The map</h2>
+<p>{{One intro sentence.}}</p>
+<figure class="diagram">
+  <div class="scroll-x">
+    {{PASTE ONE DIAGRAM PATTERN FROM THE BOTTOM OF THIS FILE}}
+  </div>
+  <figcaption>{{Tell the diagram out loud, 2 to 3 lines.}}</figcaption>
+</figure>
+
+<!-- BLOCK 5: ONE REAL CASE -->
+<h2 id="case">What actually happens, on one case</h2>
+<p class="lede">{{Name the case and say whether it is real or reconstructed.}}</p>
+<ol class="walk">
+  <li>
+    <h3>{{What happens}} <span class="who">{{the part, by its picture name}}</span></h3>
+    <p>{{One or two sentences. Present tense. Real values.}}</p>
+  </li>
+  <li>
+    <h3>{{...}} <span class="who">{{...}}</span></h3>
+    <p>{{...}}</p>
+  </li>
+</ol>
+
+<!-- BLOCK 6: THE PARTS -->
+<h2 id="parts">The parts, one by one</h2>
+<div class="grid2">
+  <div class="part">
+    <span class="tag">{{true info: cadence, state or order}}</span>
+    <h3>{{Human-readable name}}</h3>
+    <dl>
+      <dt>Its job</dt><dd>{{one sentence, no jargon}}</dd>
+      <dt>In the picture</dt><dd>{{the correspondence}}</dd>
+      <dt>When it runs</dt><dd>{{"every night at 6", "when a customer writes"}}</dd>
+      <dt>If it dies</dt><dd>{{the symptom YOU would see}}</dd>
+    </dl>
+    <details class="tech">
+      <summary>Technical detail</summary>
+      <div class="body">{{Paths, IDs, commands, parameters. Everything forbidden elsewhere.}}</div>
+    </details>
+  </div>
+  <!-- repeat: 4 to 8 parts -->
+</div>
+
+<!-- BLOCK 7: WHAT CHANGES FOR YOU -->
+<h2 id="you">What this changes for you</h2>
+<div class="grid3">
+  <div class="action"><h3>What you do</h3><ul><li>{{a real gesture}}</li></ul></div>
+  <div class="action"><h3>What you stop doing</h3><ul><li>{{...}}</li></ul></div>
+  <div class="action"><h3>What you watch</h3><ul><li>{{the one indicator, where it is, how often}}</li></ul></div>
+</div>
+
+<!-- BLOCK 8: WHEN IT BREAKS -->
+<h2 id="breaks">When it breaks</h2>
+<div class="scroll-x">
+  <table class="tbl">
+    <thead><tr><th>What you see</th><th>What it probably is</th><th>What to do</th></tr></thead>
+    <tbody>
+      <tr><td>{{visible symptom}}</td><td>{{cause}}</td><td>{{action}}</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="limits">
+  <h3>What is not done, and what I did not verify</h3>
+  <ul>
+    <li>{{accepted limit}}</li>
+    <li>{{unknown carried over from the fact sheet: never delete to look tidy}}</li>
+  </ul>
+</div>
+
+<!-- BLOCK 9: NUMBERS AND GLOSSARY -->
+<h2 id="glossary">The words, translated</h2>
+<dl class="glossary">
+  <dt>{{Term}}</dt><dd>{{One-line plain translation.}}</dd>
+  <dt>{{Term}}</dt><dd>{{...}}</dd>
+</dl>
+
+<!-- BLOCK 10: CHECK YOURSELF -->
+<h2 id="quiz">Check that you understood</h2>
+<p class="lede">If an answer does not come, the page failed, not you. Say which passage and it gets rewritten.</p>
+<div class="quiz">
+  <details><summary>{{Question about WHY}}</summary><p class="answer">{{Answer.}}</p></details>
+  <details><summary>{{Question about the SEQUENCE}}</summary><p class="answer">{{Answer.}}</p></details>
+  <details><summary>{{Question about a FAILURE}}</summary><p class="answer">{{Answer.}}</p></details>
+</div>
+
+<footer>
+  {{Subject}} · written {{YYYY-MM-DD}} · facts taken from {{the files or sources read}}.
+</footer>
+
+</div>
+
+<!-- DIAGRAM PATTERNS. Copy the one you need into block 4 (or into a part), then delete
+     this whole section. Classes s-box, s-label, s-arrow follow the theme.
+     The arrowhead marker lives in the hidden svg at the top of <body>, so every pattern keeps its arrowheads when copied alone. At most 6 boxes per diagram. -->
+<template id="patterns">
+
+<!-- A. CHAIN (the most useful: A to B to C to D) -->
+<svg viewBox="0 0 720 150" role="img" aria-label="{{describe the diagram for a screen reader}}">
+  <g class="s-arrow">
+    <line x1="152" y1="62" x2="196" y2="62" marker-end="url(#arrowhead)"/>
+    <line x1="332" y1="62" x2="376" y2="62" marker-end="url(#arrowhead)"/>
+    <line x1="512" y1="62" x2="556" y2="62" marker-end="url(#arrowhead)"/>
+  </g>
+  <rect class="s-box" x="12" y="30" width="140" height="64" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="82" y="58" text-anchor="middle">{{Part 1}}</text>
+  <text class="s-sub" x="82" y="76" text-anchor="middle">{{when it runs}}</text>
+  <rect class="s-box" x="192" y="30" width="140" height="64" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="262" y="58" text-anchor="middle">{{Part 2}}</text>
+  <text class="s-sub" x="262" y="76" text-anchor="middle">{{...}}</text>
+  <rect class="s-box" x="372" y="30" width="140" height="64" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="442" y="58" text-anchor="middle">{{Part 3}}</text>
+  <text class="s-sub" x="442" y="76" text-anchor="middle">{{...}}</text>
+  <rect class="s-box-accent" x="552" y="30" width="156" height="64" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="630" y="58" text-anchor="middle">{{The result}}</text>
+  <text class="s-sub" x="630" y="76" text-anchor="middle">{{what YOU see}}</text>
+  <text class="s-arrow-lbl" x="174" y="52" text-anchor="middle">{{what travels}}</text>
+  <text class="s-arrow-lbl" x="354" y="52" text-anchor="middle">{{...}}</text>
+  <text class="s-arrow-lbl" x="534" y="52" text-anchor="middle">{{...}}</text>
+</svg>
+
+<!-- B. SORTING (one input, one decision, several outputs) -->
+<svg viewBox="0 0 720 230" role="img" aria-label="{{...}}">
+  <g class="s-arrow">
+    <line x1="172" y1="110" x2="216" y2="110" marker-end="url(#arrowhead)"/>
+    <path d="M392 110 H430 V40 H470" marker-end="url(#arrowhead)"/>
+    <path d="M392 110 H470" marker-end="url(#arrowhead)"/>
+    <path d="M392 110 H430 V180 H470" marker-end="url(#arrowhead)"/>
+  </g>
+  <rect class="s-box" x="12" y="80" width="160" height="60" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="92" y="115" text-anchor="middle">{{What arrives}}</text>
+  <rect class="s-box-accent" x="212" y="72" width="180" height="76" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="302" y="104" text-anchor="middle">{{The gatekeeper}}</text>
+  <text class="s-sub" x="302" y="122" text-anchor="middle">{{its rule, in plain words}}</text>
+  <rect class="s-box" x="470" y="14" width="230" height="52" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="585" y="45" text-anchor="middle">{{Case 1: what happens}}</text>
+  <rect class="s-box" x="470" y="84" width="230" height="52" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="585" y="115" text-anchor="middle">{{Case 2}}</text>
+  <rect class="s-box-warn" x="470" y="154" width="230" height="52" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="585" y="185" text-anchor="middle">{{Set aside}}</text>
+</svg>
+
+<!-- C. LOOP (it goes round and round, with a trigger) -->
+<svg viewBox="0 0 720 220" role="img" aria-label="{{...}}">
+  <g class="s-arrow">
+    <path d="M200 60 H300" marker-end="url(#arrowhead)"/>
+    <path d="M420 60 H520" marker-end="url(#arrowhead)"/>
+    <path d="M600 92 V150 H120 V92" marker-end="url(#arrowhead)"/>
+  </g>
+  <rect class="s-box-accent" x="40" y="30" width="160" height="62" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="120" y="58" text-anchor="middle">{{The alarm clock}}</text>
+  <text class="s-sub" x="120" y="76" text-anchor="middle">{{every day at 6}}</text>
+  <rect class="s-box" x="300" y="30" width="120" height="62" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="360" y="66" text-anchor="middle">{{The work}}</text>
+  <rect class="s-box" x="520" y="30" width="160" height="62" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="600" y="66" text-anchor="middle">{{What gets written}}</text>
+  <text class="s-arrow-lbl" x="360" y="170" text-anchor="middle">{{and it starts again tomorrow with what is left}}</text>
+</svg>
+
+<!-- D. LAYERS (what you see, what decides, what stores) -->
+<svg viewBox="0 0 720 220" role="img" aria-label="{{...}}">
+  <rect class="s-box-accent" x="90" y="14" width="540" height="56" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="360" y="40" text-anchor="middle">{{What you see}}</text>
+  <text class="s-sub" x="360" y="58" text-anchor="middle">{{the link, the message, the table}}</text>
+  <rect class="s-box" x="90" y="82" width="540" height="56" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="360" y="108" text-anchor="middle">{{What decides}}</text>
+  <text class="s-sub" x="360" y="126" text-anchor="middle">{{...}}</text>
+  <rect class="s-box" x="90" y="150" width="540" height="56" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="360" y="176" text-anchor="middle">{{What remembers}}</text>
+  <text class="s-sub" x="360" y="194" text-anchor="middle">{{...}}</text>
+</svg>
+
+<!-- E. BEFORE / AFTER (two columns compared) -->
+<svg viewBox="0 0 720 200" role="img" aria-label="{{...}}">
+  <text class="s-sub" x="170" y="20" text-anchor="middle">BEFORE</text>
+  <text class="s-sub" x="550" y="20" text-anchor="middle">NOW</text>
+  <rect class="s-box-warn" x="20" y="32" width="300" height="150" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="170" y="100" text-anchor="middle">{{4 manual steps}}</text>
+  <text class="s-sub" x="170" y="122" text-anchor="middle">{{2 hours a week}}</text>
+  <g class="s-arrow"><line x1="336" y1="107" x2="384" y2="107" marker-end="url(#arrowhead)"/></g>
+  <rect class="s-box-accent" x="400" y="32" width="300" height="150" rx="10" stroke-width="1.5"/>
+  <text class="s-label" x="550" y="100" text-anchor="middle">{{1 link to open}}</text>
+  <text class="s-sub" x="550" y="122" text-anchor="middle">{{5 minutes}}</text>
+</svg>
+
+</template>
+</body>
+</html>

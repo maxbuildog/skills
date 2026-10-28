@@ -49,6 +49,9 @@ Or clone the repo and copy the folder you want into `~/.claude/skills/` (persona
 | [`ai-answer-audit`](skills/ai-answer-audit) | Can AI assistants read and cite my site, and do they, or do they cite someone else? Any website. | Available |
 | [`shopify-geo-audit`](skills/shopify-geo-audit) | Do ChatGPT, Perplexity and AI Overviews recommend my products, or my competitor's? Shopify, with prevalence from real stores. | Available |
 | [`telegram-channel-watchdog`](skills/telegram-channel-watchdog) | Why did my Telegram agent go silent while every status light stayed green, and how do I keep it alive? Agent ops, not a site audit. | Available |
+| [`visual-explainer`](skills/visual-explainer) | Can you explain this system to someone non-technical, on one page they will actually read? | Available |
+| [`deep-research`](skills/deep-research) | What is actually true about this question, how sure are we, and on which sources? | Available |
+| [`agent-self-improvement`](skills/agent-self-improvement) | How does my agent stop repeating the same mistake, without its instructions turning into a landfill? | Available |
 | `shopify-store-audit` | What does Google actually see on my store, and what is broken? | Planned |
 | `shopify-feed-doctor` | Why is Merchant Center disapproving my products? | Planned |
 
